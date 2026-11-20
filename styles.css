@@ -1,0 +1,1103 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   V193.4: веб-портал neyroplan.ru — светлый архитектурный glassmorphism.
+
+   Файл переписан единым плоским списком правил. Причина: в V193.2–V193.3
+   новые блоки дописывались ВНУТРЬ незакрытого `@media (max-width: 1280px)`
+   и внутрь незакрытых `.toast {` / `.np-lightbox-close {` / `.btn-danger {`.
+   На десктопе (шире 1280 px) светлые правила не применялись — отсюда белый
+   текст на белом стекле в шапке и «белая пелена» на Hero.
+   Теперь никаких вложенных правил: плоские селекторы + @media в конце.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --navy: #1F497D;
+  --navy-dark: #16365C;
+  --navy-deep: #0F2338;
+  --navy-soft: #DCE6F1;
+  --gold: #0284c7;
+  --bg: #F4F7FB;
+  --surface: #FFFFFF;
+  --text: #0F172A;
+  --muted: #5B6B82;
+  --border: #D7E1EE;
+  --ok: #059669;
+  --warn: #B45309;
+  --danger: #B91C1C;
+  --radius: 14px;
+  --shadow: 0 10px 30px rgba(15, 35, 56, .10);
+  /* ── светлое стекло ── */
+  --accent: #0284c7;
+  --accent-2: #2563eb;
+  --ink: #0f172a;
+  --ink-soft: #334155;
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-strong: rgba(255, 255, 255, 0.88);
+  --glass-card: rgba(255, 255, 255, 0.70);
+  --glass-border: rgba(255, 255, 255, 0.92);
+  --glass-shadow: 0 22px 60px rgba(23, 48, 77, 0.12), 0 2px 8px rgba(23, 48, 77, 0.06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+  background: linear-gradient(135deg, #eef2f7 0%, #e2e8f0 45%, #f8fafc 100%);
+  background-attachment: fixed;
+  color: var(--ink);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Архитектурная сетка-подложка (тонкие линии чертежа). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(2, 132, 199, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(2, 132, 199, 0.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(circle at 50% 18%, rgba(0, 0, 0, 0.9), transparent 78%);
+  mask-image: radial-gradient(circle at 50% 18%, rgba(0, 0, 0, 0.9), transparent 78%);
+}
+
+.app, .topbar, .footer { position: relative; z-index: 1; }
+
+/* ───────────────────────── Верхняя панель ───────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
+  color: #0f172a;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0f172a; }
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(180deg, #2C5C97, #1F497D);
+  border: 1px solid rgba(255,255,255,.28);
+  display: grid; place-items: center;
+  font-weight: 900; font-size: 17px; color: #ffffff;
+  box-shadow: 0 6px 16px rgba(31, 73, 125, 0.35);
+}
+.brand-text { font-weight: 800; letter-spacing: .4px; font-size: 17px; color: #0f172a; }
+
+.topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* V193.4: контраст навигации — тёмно-графитовый текст на светлом стекле. */
+.topnav a,
+.topnav button {
+  color: #1e293b !important;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .16s ease, color .16s ease, border-color .16s ease;
+}
+.topnav a:hover,
+.topnav button:hover {
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a !important;
+}
+.topnav a.active,
+.topnav a[aria-current="page"],
+.topnav a.is-active,
+.topnav button.active {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff !important;
+  border-color: rgba(2, 132, 199, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 8px 18px rgba(37, 99, 235, 0.22);
+}
+/* V192.6: вкладка «Админ» скрыта по умолчанию и появляется только владельцу платформы. */
+.topnav a.nav-admin { color: #0284c7 !important; display: none; }
+.topnav a.nav-admin.is-visible { display: inline-flex; align-items: center; }
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* V192.6: двустрочный блок профиля — ФИО и компания с ролью. */
+.profile-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  line-height: 1.15;
+  max-width: 260px;
+  padding: 5px 11px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--glass-border);
+}
+.profile-name {
+  font-size: 12.5px;
+  color: #0f172a !important;
+  font-weight: 700;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.profile-meta {
+  font-size: 10.5px;
+  color: #475569 !important;
+  font-weight: 600;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ───────────────────────── Кнопки ───────────────────────── */
+.btn {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 9px 15px;
+  font-family: inherit;
+  transition: transform .16s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  will-change: transform;
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 46%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  opacity: 0.7;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn[disabled] { opacity: .55; cursor: not-allowed; transform: none; }
+
+.btn-primary {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.92), rgba(37, 99, 235, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.75), 0 10px 25px rgba(37, 99, 235, 0.28);
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 1), rgba(37, 99, 235, 1));
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.95), 0 16px 34px rgba(37, 99, 235, 0.36);
+}
+.btn-navy {
+  background: linear-gradient(180deg, #2C5C97, #1F497D);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(31, 73, 125, 0.28);
+}
+.btn-navy:hover { background: linear-gradient(180deg, #33689F, #1B3F6D); }
+
+/* V193.4: вторичные стеклянные кнопки — тёмный текст, объём и чёткая обводка.
+   Сюда попадают «Для партнёров» в Hero и «Выйти» в шапке. */
+.btn-ghost,
+.btn-glass,
+.btn-outline {
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(15, 23, 42, 0.18) !important;
+  box-shadow: inset 0 1px 0 #ffffff, 0 8px 20px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.btn-ghost:hover,
+.btn-glass:hover,
+.btn-outline:hover {
+  background: #ffffff !important;
+  border-color: #0284c7 !important;
+  color: #0f172a !important;
+  transform: translateY(-2px);
+}
+.btn-sm { padding: 6px 11px; font-size: 12px; border-radius: 8px; }
+.btn-danger {
+  background: rgba(254, 242, 242, 0.94);
+  color: var(--danger);
+  border-color: #FECACA;
+}
+.btn-danger:hover { background: #FEE2E2; }
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+/* ───────────────────────── Layout ───────────────────────── */
+.app { flex: 1; width: 100%; max-width: 1240px; margin: 0 auto; padding: 24px 20px 40px; }
+.hidden { display: none !important; }
+.grid { display: grid; gap: 16px; }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.grid-4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+
+.card,
+.table-wrap {
+  background: var(--glass-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.06);
+}
+.card { padding: 18px; }
+.card h3 { margin: 0 0 8px; font-size: 16px; color: var(--navy-dark); }
+.card p { margin: 0; color: var(--ink-soft); font-size: 13.5px; }
+
+.section { margin-top: 30px; }
+.section-title { font-size: 22px; font-weight: 800; color: var(--navy-dark); margin: 0 0 6px; }
+.section-sub { color: var(--ink-soft); font-size: 14px; margin: 0 0 16px; }
+
+/* ───────────────────────── Таблицы ───────────────────────── */
+.table-wrap { overflow-x: auto; }
+table.data { width: 100%; border-collapse: collapse; background: transparent; font-size: 13px; }
+table.data th {
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--ink);
+  text-align: left;
+  font-weight: 700;
+  padding: 10px 12px;
+  white-space: nowrap;
+  font-size: 12.5px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+table.data td { padding: 9px 12px; border-top: 1px solid rgba(15, 23, 42, 0.06); vertical-align: top; }
+table.data tr:nth-child(even) td { background: rgba(255, 255, 255, 0.40); }
+table.data td.num, table.data th.num { text-align: right; white-space: nowrap; }
+.row-stage td { background: rgba(2, 132, 199, 0.08) !important; font-weight: 800; color: var(--navy-dark); }
+
+/* ───────────────────────── Формы ───────────────────────── */
+label.field { display: block; margin-bottom: 12px; }
+label.field span { display: block; font-size: 12px; font-weight: 700; color: var(--ink-soft); margin-bottom: 5px; }
+input[type="text"], input[type="number"], input[type="email"], input[type="password"],
+input[type="tel"], input[type="date"], select, textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid rgba(215, 225, 238, 0.95);
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--text);
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid rgba(2, 132, 199, 0.28);
+  border-color: var(--accent);
+}
+.form-row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+/* ───────────────────────── Чипы / статусы ───────────────────────── */
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+.pill-ok { background: #ECFDF5; color: var(--ok); }
+.pill-warn { background: #FFFBEB; color: var(--warn); }
+.pill-bad { background: #FEF2F2; color: var(--danger); }
+.pill-info { background: #EFF6FF; color: #1D4ED8; }
+.pill-navy { background: var(--navy-soft); color: var(--navy-dark); }
+
+/* ───────────────────────── Hero: открытая архитектурная фотография ─────────────────────────
+   V193.4: убран плотный белый градиент 0.94, который засвечивал правую половину
+   композиции (каска, чертежи, окна). Теперь затемнение только слева под текстом,
+   сама картинка справа остаётся яркой и сочной. Файл hero_neyroplan.jpg
+   НЕ перезаписывается — меняется только CSS-слой поверх него. */
+.hero,
+.hero-arch {
+  position: relative;
+  overflow: hidden;
+  color: #0f172a;
+  border-radius: 28px;
+  padding: 40px 34px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.10);
+  background:
+    linear-gradient(90deg, rgba(248, 250, 252, 0.86) 0%, rgba(248, 250, 252, 0.45) 40%, rgba(248, 250, 252, 0.0) 62%),
+    url("assets/hero_neyroplan.jpg?v=193.7") right center / cover no-repeat;
+}
+.hero::after,
+.hero-arch::after { display: none; }
+.hero-arch-bg { display: none; }
+.hero h1,
+.hero-arch h1 { font-size: 34px; line-height: 1.16; margin: 0 0 12px; font-weight: 900; color: #0f172a; }
+.hero p,
+.hero-arch p { font-size: 16px; color: #334155; max-width: 720px; margin: 0 0 20px; }
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  max-width: 780px;
+  background: none;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  color: #0284c7;
+  border: 1px solid rgba(2, 132, 199, 0.28);
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 20px;
+  padding: 5px 12px;
+  margin-bottom: 16px;
+}
+.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* V193.4: три тезиса Hero — отдельные стеклянные капсулы, не одна склеенная строка. */
+.hero-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.hero-note {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  box-shadow: inset 0 1px 0 #ffffff, 0 6px 16px rgba(15, 23, 42, 0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  white-space: nowrap;
+}
+
+/* ───────────────────────── KPI ───────────────────────── */
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.62));
+}
+.kpi-label { font-size: 11.5px; font-weight: 800; letter-spacing: .6px; color: var(--ink-soft); text-transform: uppercase; }
+.kpi-value { font-size: 22px; font-weight: 900; color: var(--navy-dark); }
+.kpi-note { font-size: 12px; color: var(--ink-soft); }
+
+/* ───────────────────────── Переключатель налогов ───────────────────────── */
+.tax-switch { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.tax-switch button {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--navy-dark);
+  border-radius: 10px;
+  padding: 8px 13px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .16s ease, border-color .16s ease, color .16s ease;
+}
+.tax-switch button:hover { border-color: var(--accent); }
+.tax-switch button.active {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+/* ───────────────────────── QR-вход ───────────────────────── */
+.qr-box { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+.qr-canvas {
+  width: 232px;
+  height: 232px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+}
+.qr-code-text {
+  font-family: "Consolas", monospace;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: var(--navy-dark);
+  background: var(--navy-soft);
+  padding: 9px 14px;
+  border-radius: 10px;
+  display: inline-block;
+}
+.qr-steps { font-size: 13px; color: var(--ink-soft); }
+.qr-steps ol { margin: 8px 0 0; padding-left: 18px; }
+.qr-steps li { margin-bottom: 5px; }
+
+/* ───────────────────────── Модалка / тост ───────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+.modal {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  width: min(560px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 18px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+.modal-head h3 { margin: 0; font-size: 16px; color: var(--navy-dark); }
+.modal-body { padding: 18px; }
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 35, 56, 0.92);
+  color: #ffffff;
+  padding: 11px 18px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  z-index: 200;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* ───────────────────────── Футер ───────────────────────── */
+.footer {
+  color: #5A6B80;
+  background: rgba(255, 255, 255, 0.55);
+  border-top: 1px solid var(--glass-border);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.footer-brand { color: var(--ink); font-weight: 800; margin-bottom: 4px; }
+.footer-note { color: #5A6B80; }
+
+/* ───────────────────────── Прочее ───────────────────────── */
+.muted { color: var(--ink-soft); }
+.small { font-size: 12px; }
+.mono { font-family: "Consolas", monospace; }
+.num { text-align: right; }
+.code,
+.key {
+  font-family: "Consolas", monospace;
+  font-size: 12.5px;
+  color: var(--navy-dark);
+  background: rgba(220, 230, 241, 0.7);
+  border: 1px solid rgba(2, 132, 199, 0.16);
+  border-radius: 8px;
+  padding: 2px 7px;
+  word-break: break-all;
+}
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.flex { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.warn-box {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+.ok-box {
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #065F46;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+.bar { height: 8px; background: rgba(226, 232, 240, 0.9); border-radius: 6px; overflow: hidden; }
+.bar > i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #2563eb);
+  transition: width .3s ease;
+}
+
+/* V193.4: компактная полоска «сейчас считается» над кнопкой «Рассчитать». */
+.calc-now {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: rgba(239, 246, 255, 0.92);
+  border: 1px solid rgba(2, 132, 199, 0.28);
+  font-size: 12.5px;
+  color: #0f172a;
+}
+.calc-now .calc-now-pct {
+  font-weight: 800;
+  color: #0284c7;
+  min-width: 44px;
+  text-align: right;
+}
+.calc-now .calc-now-line { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.calc-now .bar { flex: 1 1 140px; min-width: 80px; }
+
+/* ───────────────────────── Полноэкранный лайтбокс фото ───────────────────────── */
+.np-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  background: rgba(9, 17, 28, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.np-lightbox-open { overflow: hidden; }
+.np-lightbox-stage {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 18px;
+}
+.np-lightbox-img {
+  max-width: 96vw;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  transition: transform 0.16s ease;
+  cursor: zoom-in;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.np-lightbox-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px 20px;
+  color: #fff;
+}
+.np-lightbox-bar button {
+  min-width: 42px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.np-lightbox-bar button:hover { background: rgba(255, 255, 255, 0.22); }
+.np-lightbox-counter { font-size: 12.5px; font-weight: 700; color: #DBE7F5; }
+.np-lightbox-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.np-lightbox-close:hover { background: rgba(255, 255, 255, 0.26); }
+
+/* ───────────────────────── Посещаемость сайта в суперадминке ───────────────────────── */
+.visits-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-top: 12px;
+}
+.visits-cell {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+.visits-cell .v-label { font-size: 11.5px; font-weight: 700; color: var(--ink-soft); }
+.visits-cell .v-value { font-size: 22px; font-weight: 900; color: var(--ink); }
+.visits-cell .v-note { font-size: 11px; color: var(--ink-soft); }
+.visits-sources { margin-top: 10px; font-size: 12px; color: var(--ink-soft); }
+.visits-sources .src {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 3px 6px 0 0;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+}
+
+/* ═══════════════════════════════ Адаптивность ═══════════════════════════════ */
+@media (max-width: 1280px) {
+  .topbar { gap: 8px 12px; padding: 10px 14px; }
+  .topnav a, .topnav button { font-size: 12.5px; padding: 6px 8px; }
+  .profile-chip { max-width: 200px; padding: 4px 9px; }
+  .profile-name, .profile-meta { max-width: 180px; }
+}
+
+@media (max-width: 1080px) {
+  .topnav { overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap; }
+  .topnav::-webkit-scrollbar { display: none; }
+  .profile-chip { display: none; }
+  .brand-text { display: none; }
+}
+
+@media (max-width: 760px) {
+  .hero, .hero-arch { padding: 26px 20px; }
+  .hero h1, .hero-arch h1 { font-size: 25px; }
+  .hero-note { font-size: 12px; padding: 5px 12px; white-space: normal; }
+  .topnav { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   V193.7: мобильная шапка и Hero.
+   На узком экране широкие капсулы навигации не выводятся (они обрезались и
+   «рассыпались»), остаются логотип и компактные кнопки «Для партнёров»/«Войти»
+   с переносом строк. Hero получает плотную светлую стеклянную подложку, чтобы
+   текст не сливался с тёмными рейками и каской на фотографии.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 8px 12px;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .topnav { display: none; }
+  .brand { flex: 0 0 auto; }
+  .brand-text { display: block; font-size: 15px; }
+  .topbar-actions {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-left: 0;
+    min-width: 0;
+  }
+  .topbar-actions .btn {
+    padding: 7px 10px;
+    font-size: 12px;
+    border-radius: 10px;
+    white-space: normal;
+    line-height: 1.15;
+    text-align: center;
+    max-width: 46vw;
+  }
+  .topbar-actions .profile-chip { display: none; }
+  #btn-register { display: none; }
+
+  .hero,
+  .hero-arch {
+    padding: 22px 16px;
+    border-radius: 20px;
+    background:
+      linear-gradient(180deg, rgba(248, 250, 252, 0.94) 0%,
+        rgba(248, 250, 252, 0.88) 65%, rgba(248, 250, 252, 0.72) 100%),
+      url("assets/hero_neyroplan.jpg?v=193.7") right center / cover no-repeat;
+  }
+  .hero h1,
+  .hero-arch h1 { font-size: 22px; line-height: 1.2; }
+  .hero p,
+  .hero-arch p { font-size: 13.5px; margin-bottom: 14px; }
+  .hero-inner { max-width: 100%; }
+  .hero-badge { font-size: 10px; letter-spacing: .4px; padding: 4px 10px; }
+  .hero-actions .btn { flex: 1 1 auto; }
+  .hero-notes { gap: 8px; margin-top: 14px; }
+  .hero-note {
+    font-size: 11.5px;
+    padding: 5px 10px;
+    white-space: normal;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   V193.6: компактная вкладка «Расчёт по ПД/РД» — строки томов и папок
+   вместо громоздких белых карточек на каждый файл.
+   ══════════════════════════════════════════════════════════════════════════ */
+.calc-panel {
+  background: var(--glass-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 12px 14px;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.06);
+}
+.calc-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.calc-folder-chip { font-size: 11.5px; color: var(--ink-soft); }
+.calc-params-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: rgba(255, 255, 255, 0.72);
+  color: #1e293b;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+.calc-params-toggle:hover { border-color: var(--accent); }
+.calc-params-icon { color: var(--accent); }
+.calc-params-caret { margin-left: auto; color: var(--ink-soft); }
+.calc-params {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+.calc-params .field { margin: 0; }
+.calc-tomes-head { margin-top: 10px; }
+#pj-tomes { border-top: 1px solid rgba(15, 23, 42, 0.08); }
+#pj-tomes:empty { border-top: 0; }
+
+.folder-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 6px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+  background: rgba(255, 255, 255, 0.5);
+}
+.folder-row.is-active { background: rgba(2, 132, 199, 0.10); }
+.folder-row.is-orphan { background: #FFFBEB; }
+.folder-toggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  background: none;
+  border: 0;
+  padding: 6px 0;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  text-align: left;
+  font-family: inherit;
+}
+.folder-caret { color: var(--ink-soft); font-size: 11px; }
+.folder-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.folder-pick {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  font-family: inherit;
+}
+.folder-pick:hover { background: rgba(2, 132, 199, 0.10); }
+
+.tome-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 4px 6px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+.tome-row.is-selected { background: rgba(2, 132, 199, 0.07); }
+.tome-check { width: 16px; height: 16px; accent-color: var(--accent); flex: 0 0 auto; }
+.tome-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.tome-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tome-meta {
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tome-empty { padding: 8px 10px 10px 26px; font-size: 11px; color: var(--ink-soft); }
+.icon-act {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  background: rgba(255, 255, 255, 0.85);
+  color: #0f172a;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+.icon-act:hover { border-color: var(--accent); background: #fff; }
+.icon-act.is-danger:hover { border-color: #ef4444; color: #b91c1c; }
+.calc-run { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.calc-run .btn-primary { flex: 1 1 180px; }
+
+@media (max-width: 640px) {
+  .tome-row { min-height: 46px; }
+  .calc-run .btn-primary { flex: 1 1 100%; }
+  .calc-panel { padding: 10px; }
+}
+
+
+/* ── V193.7: плашка «Объёмы определены — рассчитать стоимость?» ── */
+.price-prompt {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.95), rgba(248, 250, 252, 0.92));
+  border: 1px solid rgba(2, 132, 199, 0.28);
+  box-shadow: inset 0 1px 0 #ffffff, 0 10px 26px rgba(15, 23, 42, 0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.price-prompt-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.price-prompt-dot {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+}
+.price-prompt-note {
+  margin: 5px 0 10px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #475569;
+}
+.price-prompt .btn { width: 100%; }
+
+@media (max-width: 768px) {
+  .price-prompt { padding: 10px 12px; }
+  .price-prompt-head { font-size: 12.5px; }
+  .price-prompt-note { font-size: 11px; }
+}
+
+
+/* ═════════ V193.10: объекты, компактные карточки, права, юр. блок ═════════ */
+
+.landing-only.is-hidden { display: none !important; }
+
+.footer-legal {
+  margin-top: 6px;
+  max-width: 520px;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: #94A3B8;
+}
+
+/* Пилюля активного объекта (Object Switcher) */
+.object-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 6px;
+  border-radius: 999px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  cursor: pointer;
+  max-width: 360px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+.object-switcher:hover { border-color: #BFDBFE; background: #F8FAFC; }
+.object-switcher img,
+.object-switcher .os-ph {
+  width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+  background: #E2E8F0; display: grid; place-items: center;
+  font-size: 13px; font-weight: 800; color: #1F497D;
+}
+.object-switcher .os-text { min-width: 0; line-height: 1.15; }
+.object-switcher .os-title {
+  font-size: 12.5px; font-weight: 700; color: #0F172A;
+  max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.object-switcher .os-sub {
+  font-size: 10.5px; color: #64748B;
+  max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.object-switcher .os-caret { color: #94A3B8; font-size: 12px; }
+
+/* Сетка объектов */
+.objects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.object-card {
+  display: flex; flex-direction: column;
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px;
+  overflow: hidden;
+}
+.object-card .oc-cover {
+  position: relative; height: 132px; background: #E2E8F0;
+  display: grid; place-items: center; color: #94A3B8; font-size: 26px;
+}
+.object-card .oc-cover img { width: 100%; height: 100%; object-fit: cover; }
+.object-card .oc-body { padding: 10px 12px 12px; }
+.object-card .oc-title { font-size: 14px; font-weight: 800; color: #0F172A; }
+.object-card .oc-sub { font-size: 11.5px; color: #64748B; margin-top: 2px; }
+.object-card .oc-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.object-card .oc-chip {
+  font-size: 10px; font-weight: 700; color: #1F497D;
+  background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 7px;
+  padding: 2px 6px;
+}
+
+/* Компактная строка-карточка расчёта ПД/РД */
+.calc-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border: 1px solid #E2E8F0; border-radius: 11px;
+  background: #FFFFFF;
+}
+.calc-row + .calc-row { margin-top: 7px; }
+.calc-row .cr-icon {
+  width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center;
+  background: #EFF6FF; color: #1F497D; font-size: 14px; flex: 0 0 auto;
+}
+.calc-row .cr-main { flex: 1 1 auto; min-width: 0; }
+.calc-row .cr-title {
+  font-size: 13px; font-weight: 700; color: #0F172A;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.calc-row .cr-sub { font-size: 10.8px; color: #64748B; margin-top: 1px; }
+.calc-row .cr-right { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.calc-row .cr-sum { font-size: 12.5px; font-weight: 800; color: #0F172A; }
+.calc-row.is-ok { border-left: 3px solid #10B981; }
+.calc-row.is-run { border-left: 3px solid #3B82F6; }
+.calc-row.is-bad { border-left: 3px solid #EF4444; }
+.calc-row.is-off { border-left: 3px solid #94A3B8; }
+
+/* Витрина модулей на главной */
+.showcase-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px;
+}
+.showcase-card {
+  text-align: left; cursor: pointer; padding: 13px 14px;
+  border-radius: 14px; border: 1px solid #E2E8F0; background: #FFFFFF;
+  transition: transform .12s ease, border-color .12s ease;
+}
+.showcase-card:hover { transform: translateY(-2px); border-color: #BFDBFE; }
+.showcase-card .sc-icon { font-size: 20px; }
+.showcase-card .sc-title { font-size: 13.5px; font-weight: 800; color: #0F172A; margin-top: 6px; }
+.showcase-card .sc-desc { font-size: 11.5px; color: #64748B; margin-top: 3px; line-height: 1.35; }
+
+/* Модалки прав и демо */
+.rights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+.rights-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 12px; color: #334155; padding: 4px 0;
+  border-bottom: 1px dashed #E2E8F0;
+}
+.demo-shot {
+  border-radius: 12px; border: 1px solid #E2E8F0; background: #F8FAFC;
+  padding: 12px; font-size: 12px; color: #334155; line-height: 1.5;
+}
+.legal-body h3 { font-size: 14px; margin: 14px 0 6px; }
+.legal-body p, .legal-body li { font-size: 12px; color: #334155; line-height: 1.55; }
+@media (max-width: 768px) {
+  .rights-grid { grid-template-columns: 1fr; }
+  .object-switcher { max-width: 100%; }
+}
+
