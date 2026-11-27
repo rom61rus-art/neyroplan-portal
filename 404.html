@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>НейроПлан — страница не найдена</title>
+  <!-- V192.1 (ТЗ §3): GitHub Pages не поддерживает серверный rewrite.
+       Навигация SPA идёт через hash-роуты (#/cabinet, #/admin, #/qr),
+       поэтому здесь достаточно вернуть пользователя на index.html. -->
+  <meta http-equiv="refresh" content="1; url=./" />
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    body { display: grid; place-items: center; min-height: 100vh; background: #0F2338; }
+    .box { max-width: 460px; padding: 28px; border-radius: 16px; background: #16365C;
+           border: 1px solid rgba(255,255,255,.18); text-align: center; color: #DCE6F1; }
+    .box h1 { margin: 0 0 10px; font-size: 22px; color: #fff; }
+    .box p { margin: 0 0 18px; font-size: 13.5px; color: #BFD3EA; line-height: 1.5; }
+    .box a.btn { display: inline-block; text-decoration: none; background: #C9A227;
+                 color: #1B2A3D; padding: 10px 18px; border-radius: 10px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Страница не найдена</h1>
+    <p>По этому адресу статического файла нет. Открываем главную страницу НейроПлан —
+       кабинет, база расценок и расчёт по ПД/РД доступны во вкладках.</p>
+    <a class="btn" href="./">Открыть НейроПлан</a>
+  </div>
+  <script>
+    // Мягкий возврат на SPA-страницу с сохранением hash-маршрута, если он был.
+    (function () {
+      var hash = location.hash || "";
+      setTimeout(function () {
+        location.replace("./" + hash);
+      }, 400);
+    })();
+  </script>
+</body>
+</html>

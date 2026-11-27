@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru" class="notranslate" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>НейроПлан — ИИ-аудит смет, расчёт объектов по ПД/РД и контроль прибыли стройки</title>
+  <meta name="description" content="НейроПлан: ИИ-аудит строительных смет, расчёт объекта по ПД/РД (PRO AI), база расценок компании, коммерческое предложение и финансовая модель объекта в 1 клик." />
+  <link rel="preload" as="image" href="./assets/hero_neyroplan.jpg?v=194.7.0" />
+  <link rel="stylesheet" href="./styles.css?v=194.8.0" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F497D'/%3E%3Ctext x='16' y='22' font-size='16' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/">
+      <span class="brand-mark">N</span>
+      <span class="brand-text">НейроПлан</span>
+    </a>
+    <nav class="topnav notranslate">
+      <!-- V194.6.1 (ТЗ §1): верхние кнопки «Тарифы» и «Обучение». -->
+      <button id="nav-tariffs" class="nav-cta landing-only" type="button">Тарифы</button>
+      <button id="nav-learn" class="nav-cta landing-only" type="button">Обучение</button>
+      <a href="#/cabinet" id="nav-cabinet">Кабинет</a>
+      <a href="#/cabinet/chat" id="nav-chat">Штаб · Чат<span class="nav-badge hidden" id="nav-chat-count">0</span></a>
+      <a href="#/marketplace" id="nav-marketplace">Биржа<span class="nav-badge hidden" id="nav-mp-count">0</span></a>
+      <a href="#/cabinet/org" id="nav-org">Организация</a>
+      <a href="#/admin" class="nav-admin" id="nav-admin" hidden>Админ</a>
+    </nav>
+    <div class="topbar-actions notranslate">
+      <div id="session-badge" class="profile-chip hidden">
+        <span class="profile-name" id="session-name">Подрядчик</span>
+        <span class="profile-meta" id="session-meta"></span>
+      </div>
+      <button id="btn-partners" class="btn btn-ghost landing-only" type="button">Для партнёров</button>
+      <!-- V194.6.1 (ТЗ §1): те же кнопки в мобильной шапке (topnav скрыт ≤760px). -->
+      <button id="nav-tariffs-mobile" class="btn btn-ghost btn-sm landing-only mobile-only" type="button">Тарифы</button>
+      <button id="nav-learn-mobile" class="btn btn-ghost btn-sm landing-only mobile-only" type="button">Обучение</button>
+      <button id="btn-register" class="btn btn-ghost landing-only" type="button">Регистрация</button>
+      <button id="btn-login" class="btn btn-primary" type="button" title="Вход по QR-коду с телефона">Войти</button>
+      <button id="btn-logout" class="btn btn-ghost hidden" type="button">Выйти</button>
+    </div>
+  </header>
+
+  <main id="app" class="app"></main>
+
+  <footer class="footer">
+    <div class="footer-col">
+      <div class="footer-brand">НейроПлан · neyroplan.ru</div>
+      <div class="footer-note">ИИ-аудит смет · расчёт объекта по ПД/РД · контроль прибыли стройки</div>
+      <!-- V194.8 (ТЗ §2): Android-сборка доступна и из подвала сайта. -->
+      <div class="footer-note">
+        <a href="https://db.neyroplan.ru/storage/v1/object/public/releases/neyroplan-latest.apk"
+           target="_blank" rel="noopener" download>Скачать для Android (APK)</a>
+        <span class="small muted">· Версия для Android · iOS выйдет позднее</span>
+      </div>
+      <div class="footer-note">
+        <a href="#/legal" id="link-offer">Пользовательское соглашение (Оферта)</a> ·
+        <a href="#/legal" id="link-disclaimer">Статус расчётов ИИ</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-note">Технические домены: neyroplan.ru · нейроплан.рф</div>
+      <div class="footer-note" id="release-tag"></div>
+      <div class="footer-note">
+        <button id="btn-feedback" class="btn btn-ghost btn-sm" type="button">Связаться с разработчиком</button>
+        <span class="small muted">neyroplan@mail.ru · <a href="https://t.me/neyroplan" target="_blank" rel="noopener noreferrer">Telegram</a></span>
+      </div>
+      <div class="footer-legal">
+        Все расчёты (объёмы, себестоимость, рыночные цены, КП) носят справочно-информационный
+        характер, не являются проектной или сметной экспертизой и требуют проверки
+        специалистом ПТО/сметчиком до подписания договоров.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Модальные окна -->
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div id="modal" class="modal">
+      <div class="modal-head">
+        <h3 id="modal-title">Вход</h3>
+        <button id="modal-close" class="icon-btn" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="./vendor/supabase.js"></script>
+  <script src="./vendor/qrcode.min.js"></script>
+  <script src="./config.js?v=194.8.0"></script>
+  <script>
+    // V193.3: Яндекс.Метрика подключается только если ID заполнен в config.js.
+    (function () {
+      var id = window.NEYROPLAN_CONFIG && window.NEYROPLAN_CONFIG.YANDEX_METRIKA_ID;
+      if (!id) return;
+      (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+          if (document.scripts[j].src === r) { return; }
+        }
+        k = e.createElement(t); a = e.getElementsByTagName(t)[0];
+        k.async = 1; k.src = r; a.parentNode.insertBefore(k, a);
+      })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+      window.ym(Number(id), "init", {
+        clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: false
+      });
+    })();
+  </script>
+  <script src="./app.js?v=194.8.0"></script>
+</body>
+</html>
